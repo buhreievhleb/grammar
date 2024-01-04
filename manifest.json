@@ -1,0 +1,32 @@
+{
+    "name": "Grammar Checker",
+    "description": "Check grammar on any page",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "tabs"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["English (American).dic"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["Typo.js-master/typo/typo.js", "content.js"]
+        }
+    ],
+    "icons": {
+        "128": "icons/hd.png"
+    }
+}

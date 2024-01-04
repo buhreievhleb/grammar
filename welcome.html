@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRAMMAR Extension</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .title {
+            font-size: 3em;
+            font-weight: bold;
+            background-image: linear-gradient(270deg, blue, lime, blue, lime);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: gradient 6s ease-in-out infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .author-version {
+            margin-top: 20px;
+            font-size: 1em;
+        }
+
+        .rectangle {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 40%;
+            text-align: left;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="title">GRAMMAR</div>
+        <div class="author-version">Author: Buhreiev Hleb<br>Version 0.0.1a</div>
+    </div>
+    <div class="container">
+        <div class="rectangle">
+            <h2>With Errors</h2>
+            <p>The quik brown fox jumps over the lazy dog.</p>
+        </div>
+        <div class="rectangle">
+            <h2>Corrected</h2>
+            <p>The quick brown fox jumps over the lazy dog.</p>
+        </div>
+    </div>
+</body>
+</html>

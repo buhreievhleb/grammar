@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Grammar Checker Extension</title>
+        <style>
+            @keyframes gradient-text-animation {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            body {
+                font-family: Arial, sans-serif;
+                background-color: white;
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                width: 300px;
+                height: 350px;
+                border: 10px solid black;
+                box-sizing: border-box;
+            }
+            #title {
+                font-size: 30px;
+                font-weight: bold;
+                background: linear-gradient(-45deg, #00c6ff, #0072ff, #88d3ce, #6dd5ed, #ffffff);
+                background-size: 200% 200%;
+                -webkit-background-clip: text;
+                color: transparent;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 40px;
+                animation: gradient-text-animation 10s ease infinite;
+            }
+            #checkButton { 
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                border: none;
+                background-color: #4CAF50;
+                color: white;
+                border-radius: 4px;
+                outline: none;
+                transition: background-color 0.3s ease;
+            }
+            #checkButton:active { /* Стили для активного состояния кнопки */
+                transform: scale(0.98);
+                background-color: #367a38;
+            }
+            #results { /* Стили для блока результатов */
+                border: 1px solid #000000;
+                border-radius: 4px;
+                width: 90%;
+                height: 50px;
+                padding: 5px;
+                margin-top: 10px;
+                background-color: #000000;
+                color: #ffffff;
+                overflow: auto;
+                font-family: monospace;
+                white-space: pre;
+            }
+            .footer {
+                position: absolute;
+                bottom: 10px;
+                width: 100%;
+                text-align: center;
+                font-size: 10px;
+                color: grey;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="title">GRAMMAR</div>
+        <button id="checkButton">Start</button> <!-- Обновленный ID и текст кнопки -->
+        <div id="results">Results will be shown here...</div> <!-- Блок для отображения результатов -->
+        <div class="footer">
+            <p>Author: Buhreiev Hleb</p>
+            <p>Version 0.0.1a</p>
+        </div>
+        <script src="popup.js"></script>
+    </body>
+</html>
