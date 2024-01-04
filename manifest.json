@@ -16,10 +16,10 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["English (American).dic"],
-            "matches": ["<all_urls>"]
+          "resources": ["Dic/English.aff", "Dic/English.dic"],
+          "matches": ["<all_urls>"]
         }
-    ],
+      ],
     "content_scripts": [
         {
             "matches": ["<all_urls>"],

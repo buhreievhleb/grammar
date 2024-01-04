@@ -1,25 +1,22 @@
 let dictionary;
 
-// Загрузка словаря для Typo.js
-function loadDictionary() {
-    const affPath = chrome.runtime.getURL('Dic/English (American).aff');
-    const dicPath = chrome.runtime.getURL('Dic/English (American).dic');
-
-    Promise.all([
-        fetch(affPath).then(response => response.text()),
-        fetch(dicPath).then(response => response.text())
-    ]).then(([affData, dicData]) => {
-        dictionary = new Typo("en_US", affData, dicData);
-    });
+async function loadDictionary() {
+  try {
+    const affPath = chrome.runtime.getURL('Dic/English.aff');
+    const dicPath = chrome.runtime.getURL('Dic/English.dic');
+    const [affResponse, dicResponse] = await Promise.all([
+      fetch(affPath), fetch(dicPath)
+    ]);
+    const [affData, dicData] = await Promise.all([
+      affResponse.text(), dicResponse.text()
+    ]);
+    dictionary = new Typo("en_US", affData, dicData, { platform: 'any' });
+  } catch (error) {
+    console.error('Failed to load dictionary:', error);
+  }
 }
 
-// Подчеркивание ошибок
-function underlineErrors(errors) {
-    errors.forEach(error => {
-        const regex = new RegExp(`\\b${error}\\b`, 'gi');
-        document.body.innerHTML = document.body.innerHTML.replace(regex, `<span class="grammar-error">${error}</span>`);
-    });
-}
+
 
 // Проверка текста на странице
 function checkSpelling() {
@@ -30,18 +27,33 @@ function checkSpelling() {
     return errors.length;
 }
 
+// Подчеркивание ошибок
+function underlineErrors(errors) {
+    errors.forEach(error => {
+        const regex = new RegExp(`\\b${error}\\b`, 'gi');
+        document.body.innerHTML = document.body.innerHTML.replace(regex, `<span class="grammar-error">${error}</span>`);
+    });
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "analyzePage") {
         if (!dictionary) {
-            loadDictionary();
-            sendResponse({error: "Dictionary is not loaded yet."});
-            return;
+            loadDictionary().then(() => {
+                const numErrors = checkSpelling();
+                sendResponse({ errors: numErrors });
+            }).catch(error => {
+                console.error('Error loading dictionary:', error);
+                sendResponse({ errors: 0 });
+            });
+        } else {
+            const numErrors = checkSpelling();
+            sendResponse({ errors: numErrors });
         }
-        const numErrors = checkSpelling();
-        sendResponse({ errors: numErrors });
     }
-    return true;
+    return true; // Для асинхронной отправки ответа
 });
 
-// При инъекции скрипта начинаем загрузку словаря
-loadDictionary();
+// При запуске скрипта начинаем загрузку словаря
+if (!dictionary) {
+    loadDictionary();
+}

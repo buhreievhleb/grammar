@@ -23,3 +23,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+document.getElementById('checkButton').addEventListener('click', () => {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        const activeTab = tabs[0];
+        if (!activeTab.url.startsWith('http://') && !activeTab.url.startsWith('https://')) {
+            console.error('This is not a web page.');
+            return;
+        }
+        
+        chrome.scripting.executeScript({
+            target: {tabId: activeTab.id},
+            function: injectedFunction
+        });
+    });
+});
+
+function injectedFunction() {
+    // Отправка сообщения в content.js
+    chrome.runtime.sendMessage({action: "analyzePage"}, response => {
+        if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError.message);
+            return;
+        }
+        console.log('Number of errors:', response.errors);
+    });
+}
+
