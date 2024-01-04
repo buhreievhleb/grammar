@@ -11,49 +11,39 @@ async function loadDictionary() {
       affResponse.text(), dicResponse.text()
     ]);
     dictionary = new Typo("en_US", affData, dicData, { platform: 'any' });
+    console.log("Dictionary loaded successfully.");
   } catch (error) {
     console.error('Failed to load dictionary:', error);
   }
 }
 
-
-
-// Проверка текста на странице
-function checkSpelling() {
-    const text = document.body.innerText;
-    const words = text.split(/\s+/);
-    const errors = words.filter(word => !dictionary.check(word));
-    underlineErrors(errors);
-    return errors.length;
-}
-
-// Подчеркивание ошибок
 function underlineErrors(errors) {
-    errors.forEach(error => {
-        const regex = new RegExp(`\\b${error}\\b`, 'gi');
-        document.body.innerHTML = document.body.innerHTML.replace(regex, `<span class="grammar-error">${error}</span>`);
-    });
+  errors.forEach(error => {
+    const regex = new RegExp(`\\b${error}\\b`, 'gi');
+    document.body.innerHTML = document.body.innerHTML.replace(regex, 
+      `<span class="grammar-error" style="border-bottom: 2px solid red;">${error}</span>`);
+  });
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "analyzePage") {
-        if (!dictionary) {
-            loadDictionary().then(() => {
-                const numErrors = checkSpelling();
-                sendResponse({ errors: numErrors });
-            }).catch(error => {
-                console.error('Error loading dictionary:', error);
-                sendResponse({ errors: 0 });
-            });
-        } else {
-            const numErrors = checkSpelling();
-            sendResponse({ errors: numErrors });
-        }
-    }
-    return true; // Для асинхронной отправки ответа
+async function checkSpelling() {
+  if (!dictionary) {
+    await loadDictionary();
+  }
+  const text = document.body.innerText;
+  const words = text.split(/\s+/);
+  const errors = words.filter(word => !dictionary.check(word));
+  underlineErrors(errors);
+  return errors.length;
+}
+
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  if (request.action === "analyzePage") {
+    const numErrors = await checkSpelling();
+    sendResponse({ errors: numErrors });
+  }
+  return true;
 });
 
-// При запуске скрипта начинаем загрузку словаря
 if (!dictionary) {
-    loadDictionary();
+  loadDictionary();
 }
